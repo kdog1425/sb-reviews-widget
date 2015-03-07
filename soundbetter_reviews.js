@@ -21,7 +21,7 @@ var reviews = [{
 
 window.onload = function(){
 	var div = document.getElementById("sb_reviews_inner");
-	var ul = document.getElementById("reviews_ul");
+	var ul = document.getElementById("review_widget");
 	for (r in reviews){
 	  // get review data
 	  var curr_review = reviews[r];
@@ -72,18 +72,16 @@ function scrollReviews(numReviews)
 
 
 function scrollTo_new(){
-    var ul = document.getElementById("reviews_ul");
+    var ul = document.getElementById("review_widget");
 	ul.appendChild(ul.firstChild.cloneNode(true));   
 	ul.lastChild.id = "item 3";
 	var container = document.getElementById("sb_reviews_inner");
-	console.log(container.scrollTop, ul.clientHeight, ul.lastChild.clientHeight);
 	
 	var maxOffset = ul.clientHeight - ul.lastChild.scrollHeight;
 	
     function infScroll(idx, sofar, delay){
 		setTimeout(function() {
 			currItem = ul.childNodes[idx];
-			//console.log(idx, container.scrollTop, currItem.scrollHeight);
 			if (container.scrollTop >= (sofar + currItem.scrollHeight)){
 				idx = ++idx % 3;
 				sofar += container.scrollTop;
@@ -105,55 +103,6 @@ function scrollTo_new(){
 	window.requestAnimationFrame(function(){infScroll(0, 0, 0)}, 1000); 
 }
 
-function scrollTo(toReview, numReviews, lastScroll, container, duration) {
-	console.log("toReview:", toReview, "numReviews:", numReviews, "duration:", duration);
-	if (toReview % numReviews == 0){
-		container.scrollTop = 0;
-		toReview = toReview % numReviews;
-		duration = REVIEW_SCROLL_DURATION;
-		lastScroll = -1;
-	}
-	
-	var id = "item " + (toReview % numReviews);
-	var li = document.getElementById(id);
-	var to = li.offsetTop;
-	console.log("curr top: ", container.scrollTop);
-	console.log("scrolling to: ", to);
-	if (container.scrollTop >= to || container.scrollTop == lastScroll){
-		  console.log("reached item!!");
-		  console.log("lastScroll:", lastScroll);
-		  
-	}
-	else{
-		//var style = window.getComputedStyle(li);
-		//var margin = style.getPropertyValue('margin').replace(/[^-\d\.]/g, '');
-		var difference = to - container.scrollTop;
-		var perTick = difference / duration * 10;
-	
-		setTimeout(function() {
-			lastScroll = container.scrollTop;
-			console.log("lastScroll:", lastScroll);
-			container.scrollTop = container.scrollTop + perTick;
-			scrollTo(toReview, numReviews, lastScroll, container, duration - 10);
-		}, 10);
-	}
-}
-
-function cycle(numReviews, container){
-	/*
-	var ul = document.getElementById("reviews_ul");
-	var firstli = ul.firstChild;
-	var lastli = ul.lastChild;
-	var firstid = firstli.id.replace("item ","");
-	var lastid = lastli.id.replace("item ","");
-	
-	ul.removeChild(firstli);
-	firstli.id = "item " + (++lastid % numReviews);
-	ul.appendChild(firstli);
-	lastid;
-	return lastid;
-	*/
-}
 
 function img_create(src, alt, title) {
     var img= document.createElement('img');
@@ -161,5 +110,19 @@ function img_create(src, alt, title) {
     if (alt!=null) img.alt= alt;
     if (title!=null) img.title= title;
     return img;
+}
+
+function changeColor(c){
+	var ul = document.getElementById('review_widget');
+	var lis = ul.getElementsByTagName("li");
+	for (var i = 0, len = lis.length; i < len; i++){
+		console.log(i);
+		lis[i].style.backgroundColor = c.value;
+	}
+	var pis = ul.getElementsByTagName("p");
+	for (var i = 0, len = pis.length; i < len; i++){
+		console.log(i);
+		pis[i].style.backgroundColor = c.value;	
+	}
 }
  
