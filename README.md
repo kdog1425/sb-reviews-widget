@@ -1,6 +1,6 @@
 # sb-reviews-widget
 
-To view:
+To view =>
 
-clone repository and open the soundbetter_reviews.html in a Chrome browser;
+Clone repository and open the soundbetter_reviews.html in a Chrome browser.
 
