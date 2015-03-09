@@ -19,6 +19,18 @@ var reviews = [{
   }}
 ]
 
+var cssText_roundCorners = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;";
+
+var cssText_badge = "padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto "
+
+var cssText_li = "margin: 5px;background-color: rgb(224,220,230);font-family: Verdana, Arial, sans-serif;line-height: 1.0;font-weight: 3;font-size: 80%;color: #433249;"
+
+var cssText_p = "opacity: 1.0;margin: 5px;padding-top: 5px;background-color: rgb(224,220,230)";
+
+var cssText_reviewStars = "padding-top: 1px;padding-bottom: 3px";
+
+var REVIEW_SCROLL_DURATION = 1500;
+
 window.onload = function(){
 	var div = document.getElementById("sb_reviews_inner");
 	var ul = document.getElementById("review_widget");
@@ -29,7 +41,8 @@ window.onload = function(){
 	  // create list item
 	  var curr_li = document.createElement("li");
 	  curr_li.setAttribute("id", "item " + r);
-	  curr_li.className += " rounded-corners";
+	  curr_li.style.cssText += cssText_li;
+	  curr_li.style.cssText += cssText_roundCorners;
 	  
 	  // reviewer name
 	  var reviewer = document.createElement("p");
@@ -42,7 +55,7 @@ window.onload = function(){
 	  
 	  // rating
 	  var rating = document.createElement("p");
-	  rating.className += " review-stars";
+	  rating.style.cssText += cssText_reviewStars;
 	  for (var i = 0; i < curr_review.rating; i++){
 		  var img = img_create("img/star-on.png");
 	  	  rating.appendChild(img);
@@ -58,20 +71,18 @@ window.onload = function(){
 	
 	// timed auto scroll, item to item
 	div.scrollTop = 5;
-	scrollReviews(ul.childNodes.length);
+	//scrollReviews(ul.childNodes.length);
 }
-
-var REVIEW_SCROLL_DURATION = 1500;
 
 function scrollReviews(numReviews)
 {
 	setTimeout(function(){
-			scrollTo_new()
+			scrollToNextReview()
 	}, 1000);
 }
 
 
-function scrollTo_new(){
+function scrollToNextReview(){
     var ul = document.getElementById("review_widget");
 	ul.appendChild(ul.firstChild.cloneNode(true));   
 	ul.lastChild.id = "item 3";

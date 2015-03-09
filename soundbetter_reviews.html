@@ -1,8 +1,5 @@
 <html>
 <head>
-
-
-<link rel="stylesheet" type="text/css" href="soundbetter_reviews.css">
 <script src="soundbetter_reviews.js"></script>
 <script type="text/javascript" src="jscolor/jscolor.js"></script>
 </head>
@@ -10,17 +7,33 @@
 <div>
 
 </div>
-<div id="embed_section" style="width: 260px; height: 300px; background: #F3F1FF;">
+<div id="embed_section" style="width: 260px; height: 300px; background: rgba(224, 220, 230, 0.48); -moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;">
 <a href="http://soundbetter.com"> 
 <img src="img/SoundBetterBadge.png" id="badge"/>
 </a>
-<div id="sb_reviews_outer" class="review_widget_outer">
-<div id="sb_reviews_inner" class="review_widget_inner">
-  <ul id="review_widget"></ul>
+<div id="sb_reviews_outer" class="review_widget_outer" style="width: 220px;
+	height: 140px;
+	overflow: hidden;
+	position: relative;
+	margin: 0px auto;
+	background-color: #aaaaaa;">
+
+<div id="sb_reviews_inner" class="review_widget_inner" style="width: 100%;
+	height: 100%;
+	background-color: #FFF;
+	overflow: auto;
+	padding-right: 15px;
+	background: rgba(255,255,255,1);">
+
+  <ul id="review_widget" style="list-style: none;
+	list-style-position:inside;
+    margin:0;
+    padding:0; 
+	background-color: #f8f8f8;"></ul>
  </div>
 </div>
 
-<div id="customization_section">
+<div id="customization_section" style="text-align: center;">
 <p> 
 Change background: <input class="color"
 	onchange="changeColor(this)">
