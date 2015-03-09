@@ -142,8 +142,10 @@ function changeColor(c){
 	// 	console.log(i);
 	// 	pis[i].style.backgroundColor = c.value;	
 	// }
-	var div = document.getElementById('sb_reviews_inner');
-	div.style.backgroundColor = c.value;
+	var div_inner = document.getElementById('sb_reviews_inner');
+	var div_outer = document.getElementById('sb_reviews_outer');
+	div_inner.style.backgroundColor = c.value;
+	div_outer.style.backgroundColor = c.value;
 }
  
 function refreshEmbedCode(){
