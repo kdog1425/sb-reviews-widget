@@ -21,13 +21,15 @@ var reviews = [{
 
 var cssText_roundCorners = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;";
 
-var cssText_badge = "padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto "
+var cssText_badge = "padding-top: 5px; padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto "
 
 var cssText_li = "margin: 5px;font-family: Verdana, Arial, sans-serif; line-height: 1.0; font-weight: 3; font-size: 80%; "//color: #433249;"
 
-var cssText_p = "opacity: 1.0;margin: 5px;padding-top: 5px;background-color: rgb(224,220,230)";
+var cssText_p = "opacity: 1.0; padding-bottom: 2px; margin-bottom:2px;";
 
-var cssText_reviewStars = "padding-top: 1px;";
+var cssText_reviewBody = "opacity: 1.0; margin-top: 2px; margin-bottom: 7px;";
+
+var cssText_reviewStars = "margin-bottom: 2px; margin-top: 1px;";
 
 var REVIEW_SCROLL_DURATION = 1500;
 
@@ -49,12 +51,14 @@ window.onload = function(){
 	  
 	  // reviewer name
 	  var reviewer = document.createElement("p");
+	  reviewer.style.cssText += cssText_p;
 	  reviewer.innerHTML = curr_review.reviewer.name;
 	  reviewer.style.fontStyle = "italic";
 	  
 	  // review body
 	  var review_body = document.createElement("p");
 	  review_body.innerHTML = curr_review.body;
+	  review_body.style.cssText += cssText_reviewBody;
 	  
 	  // rating
 	  var rating = document.createElement("p");
@@ -66,8 +70,8 @@ window.onload = function(){
 	  
 	  // append all
 	  curr_li.appendChild(reviewer);
-	  curr_li.appendChild(review_body);
 	  curr_li.appendChild(rating);
+	  curr_li.appendChild(review_body);
 	  ul.appendChild(curr_li);
 	}
 	
