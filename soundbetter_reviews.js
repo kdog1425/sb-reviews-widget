@@ -23,15 +23,18 @@ var cssText_roundCorners = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-
 
 var cssText_badge = "padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto "
 
-var cssText_li = "margin: 5px;background-color: rgb(224,220,230);font-family: Verdana, Arial, sans-serif;line-height: 1.0;font-weight: 3;font-size: 80%;color: #433249;"
+var cssText_li = "margin: 5px;font-family: Verdana, Arial, sans-serif; line-height: 1.0; font-weight: 3; font-size: 80%; "//color: #433249;"
 
 var cssText_p = "opacity: 1.0;margin: 5px;padding-top: 5px;background-color: rgb(224,220,230)";
 
-var cssText_reviewStars = "padding-top: 1px;padding-bottom: 3px";
+var cssText_reviewStars = "padding-top: 1px;";
 
 var REVIEW_SCROLL_DURATION = 1500;
 
 window.onload = function(){
+	var badge = document.getElementById("badge");
+	badge.style.cssText += cssText_badge;
+	refreshEmbedCode();
 	var div = document.getElementById("sb_reviews_inner");
 	var ul = document.getElementById("review_widget");
 	for (r in reviews){
@@ -67,7 +70,6 @@ window.onload = function(){
 	  curr_li.appendChild(rating);
 	  ul.appendChild(curr_li);
 	}
-	ul.firstChild.style.height = 135; // for infinite scroll
 	
 	// timed auto scroll, item to item
 	div.scrollTop = 5;
@@ -76,6 +78,8 @@ window.onload = function(){
 
 function scrollReviews(numReviews)
 {
+	var ul = document.getElementById("review_widget");
+	ul.firstChild.style.height = 135; // for infinite scroll
 	setTimeout(function(){
 			scrollToNextReview()
 	}, 1000);
@@ -85,16 +89,15 @@ function scrollReviews(numReviews)
 function scrollToNextReview(){
     var ul = document.getElementById("review_widget");
 	ul.appendChild(ul.firstChild.cloneNode(true));   
-	ul.lastChild.id = "item 3";
+	ul.lastChild.id = "item " + ul.childNodes.length;
 	var container = document.getElementById("sb_reviews_inner");
 	
 	var maxOffset = ul.clientHeight - ul.lastChild.scrollHeight;
-	
-    function infScroll(idx, sofar, delay){
+	function infScroll(idx, sofar, delay){
 		setTimeout(function() {
 			currItem = ul.childNodes[idx];
 			if (container.scrollTop >= (sofar + currItem.scrollHeight)){
-				idx = ++idx % 3;
+				idx = ++idx % ul.childNodes.length;
 				sofar += container.scrollTop;
 				delay = 1000;
 			}
@@ -124,16 +127,24 @@ function img_create(src, alt, title) {
 }
 
 function changeColor(c){
-	var ul = document.getElementById('review_widget');
-	var lis = ul.getElementsByTagName("li");
-	for (var i = 0, len = lis.length; i < len; i++){
-		console.log(i);
-		lis[i].style.backgroundColor = c.value;
-	}
-	var pis = ul.getElementsByTagName("p");
-	for (var i = 0, len = pis.length; i < len; i++){
-		console.log(i);
-		pis[i].style.backgroundColor = c.value;	
-	}
+	// var ul = document.getElementById('review_widget');
+	// var lis = ul.getElementsByTagName("li");
+	// for (var i = 0, len = lis.length; i < len; i++){
+	// 	console.log(i);
+	// 	lis[i].style.backgroundColor = c.value;
+	// }
+	// var pis = ul.getElementsByTagName("p");
+	// for (var i = 0, len = pis.length; i < len; i++){
+	// 	console.log(i);
+	// 	pis[i].style.backgroundColor = c.value;	
+	// }
+	var div = document.getElementById('sb_reviews_inner');
+	div.style.backgroundColor = c.value;
 }
  
+function refreshEmbedCode(){
+	var js = document.getElementById("embed_code_js");
+	var html = document.getElementById("embed_code_html");
+
+	js.innerHTML = "<script src=\"soundbetter_reviews.js\"></script><script type=\"text/javascript\" src=\"jscolor/jscolor.js\"></script>";
+}
