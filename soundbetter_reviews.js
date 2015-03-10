@@ -156,7 +156,7 @@ function createCustomizationElements(){
 		js_widget_code.innerHTML = "Paste this code to load the widget scripts:";
 		var js_textarea = createElement("textarea", "sb_embed_code_js");
 		var html_widget_code = createElement("p", "");
-		html_widget_code.innerHTML = "Paste this div where you want the widget:";
+		html_widget_code.innerHTML = "Paste this code where you want the widget:";
 		var html_textarea = createElement("textarea", "sb_embed_code_html");
 		sb_customization_section.appendChild(backgroundColor);
 		sb_customization_section.appendChild(js_widget_code);
