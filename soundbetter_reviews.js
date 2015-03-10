@@ -20,13 +20,19 @@ var reviews = [{
 ]
 
 window.onload = function(){
-	var cssTextDict = createCssText();
-	createPreviewElements();
-	createCustomizationElements();
-	var sb_reviews_bg_color = document.getElementById("sb_reviews_widget").getAttribute("data");
-	refreshEmbedCode(sb_reviews_bg_color, cssTextDict);
-	updateCss(cssTextDict);
-	updateReviewsList(cssTextDict);
+	var sb_reviews_widget = document.getElementById("sb_reviews_widget");
+	if (sb_reviews_widget){
+		var cssTextDict = createCssText();
+		createPreviewElements(sb_reviews_widget);
+		createCustomizationElements(sb_reviews_widget);
+		var sb_reviews_bg_color = sb_reviews_widget.getAttribute("data");
+		refreshEmbedCode(sb_reviews_bg_color, cssTextDict);
+		updateCss(cssTextDict);
+		updateReviewsList(cssTextDict);
+	}
+	else{
+		console.log("'sb_reviews_widget' div not in html!");
+	}
 }
 
 function updateReviewsList(cssTextDict){
@@ -90,51 +96,39 @@ function updateCss(cssTextDict){
 	updateElementStyle("sb_customization_section", cssTextDict["cssText_sbCustomizationSection"]);
 }
 
-function createPreviewElements(){
-	var mainDiv = document.getElementById("sb_reviews_widget");
-	if (mainDiv){
-		var sb_embed_preview = createElement("div", "sb_embed_preview") 
-		mainDiv.appendChild(sb_embed_preview);
-		var sb_badge_a = createElement("a", "sb_badge");
-		sb_badge_a.setAttribute("href", "http://soundbetter.com");
-		var sb_badge_img = createElement("img", "sb_badgeImg");
-		sb_badge_img.setAttribute("src", "img/SoundBetterBadge.png");
-		sb_badge_a.appendChild(sb_badge_img);
-		sb_embed_preview.appendChild(sb_badge_a);
-		var sb_reviews_list = createElement("ul","sb_reviews_list");
-		var sb_reviews_inner = createElement("div","sb_reviews_inner");
-		var sb_reviews_outer = createElement("div","sb_reviews_outer");
-		sb_reviews_outer.appendChild(sb_reviews_inner);
-		sb_reviews_inner.appendChild(sb_reviews_list);
-		sb_embed_preview.appendChild(sb_reviews_outer);
-	}
-	else{
-		console.log("'sb_reviews_widget' div not in html!");
-	}
+function createPreviewElements(mainDiv){
+	var sb_embed_preview = createElement("div", "sb_embed_preview") 
+	mainDiv.appendChild(sb_embed_preview);
+	var sb_badge_a = createElement("a", "sb_badge");
+	sb_badge_a.setAttribute("href", "http://soundbetter.com");
+	var sb_badge_img = createElement("img", "sb_badgeImg");
+	sb_badge_img.setAttribute("src", "img/SoundBetterBadge.png");
+	sb_badge_a.appendChild(sb_badge_img);
+	sb_embed_preview.appendChild(sb_badge_a);
+	var sb_reviews_list = createElement("ul","sb_reviews_list");
+	var sb_reviews_inner = createElement("div","sb_reviews_inner");
+	var sb_reviews_outer = createElement("div","sb_reviews_outer");
+	sb_reviews_outer.appendChild(sb_reviews_inner);
+	sb_reviews_inner.appendChild(sb_reviews_list);
+	sb_embed_preview.appendChild(sb_reviews_outer);
 }
 
-function createCustomizationElements(){
-	var mainDiv = document.getElementById("sb_reviews_widget");
-	if (mainDiv){
-		var sb_customization_section = createElement("div", "sb_customization_section"); 
-		mainDiv.appendChild(sb_customization_section);
-		var backgroundColor = createElement("p", "sb_bgColor_control");
-		backgroundColor.innerHTML = "Change background: <input class=\"color\"onchange=\"changeColor(this)\">";
-		var js_widget_code = createElement("p", "");
-		js_widget_code.innerHTML = "Paste this code to load the widget scripts:";
-		var js_textarea = createElement("textarea", "sb_embed_code_js");
-		var html_widget_code = createElement("p", "");
-		html_widget_code.innerHTML = "Paste this code where you want the widget:";
-		var html_textarea = createElement("textarea", "sb_embed_code_html");
-		sb_customization_section.appendChild(backgroundColor);
-		sb_customization_section.appendChild(js_widget_code);
-		sb_customization_section.appendChild(js_textarea);
-		sb_customization_section.appendChild(html_widget_code);
-		sb_customization_section.appendChild(html_textarea);
-	}
-	else{
-		console.log("'sb_reviews_widget' div not in html!");
-	}
+function createCustomizationElements(mainDiv){
+	var sb_customization_section = createElement("div", "sb_customization_section"); 
+	mainDiv.appendChild(sb_customization_section);
+	var backgroundColor = createElement("p", "sb_bgColor_control");
+	backgroundColor.innerHTML = "Change background: <input class=\"color\"onchange=\"changeColor(this)\">";
+	var js_widget_code = createElement("p", "");
+	js_widget_code.innerHTML = "Paste this code to load the widget scripts:";
+	var js_textarea = createElement("textarea", "sb_embed_code_js");
+	var html_widget_code = createElement("p", "");
+	html_widget_code.innerHTML = "Paste this code where you want the widget:";
+	var html_textarea = createElement("textarea", "sb_embed_code_html");
+	sb_customization_section.appendChild(backgroundColor);
+	sb_customization_section.appendChild(js_widget_code);
+	sb_customization_section.appendChild(js_textarea);
+	sb_customization_section.appendChild(html_widget_code);
+	sb_customization_section.appendChild(html_textarea);
 }
 
 function img_create(src, alt, title) {
