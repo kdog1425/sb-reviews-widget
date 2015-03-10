@@ -154,7 +154,7 @@ function changeColor(c){
 function refreshEmbedCode(c, cssTextDict){
 	var js = document.getElementById("sb_embed_code_js");
 	var html = document.getElementById("sb_embed_code_html");
-	js.innerHTML = "<script src=\"soundbetter_reviews.js\"></script><script type=\"text/javascript\" src=\"jscolor/jscolor.js\"></script>";
+	js.innerHTML = "<script src=\"soundbetter_reviews.js\"></script><script type=\"text/javascript\"></script>";
 	html.innerHTML = "<div data=" + c + " id=\"sb_reviews_widget\"></div>";
 }
 
