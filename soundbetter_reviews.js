@@ -202,7 +202,7 @@ function createCssText(){
 
 	cssTextDict["cssText_reviewBody"] = "opacity: 1.0; margin-top: 2px; margin-bottom: 7px;";
 
-	cssTextDict["cssText_reviewStars"] = "margin-bottom: 2px; margin-top: 1px;";
+	cssTextDict["cssText_reviewStars"] = "margin-bottom: 4px; margin-top: 1px;";
 
 	cssTextDict["cssText_sbCustomizationSection"] = "height: 50%; padding-top: 5px; text-align: center; font-family: Georgia; font-weight: 3; font-size: 80%;";
 	return cssTextDict;
