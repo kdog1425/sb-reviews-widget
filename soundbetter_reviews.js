@@ -19,57 +19,19 @@ var reviews = [{
   }}
 ]
 
-var REVIEW_SCROLL_DURATION = 1500;
-
-function updateElementStyle(id, cssString){
-	var curr = document.getElementById(id);
-	if (curr){
-		curr.style.cssText += cssString;
-	}
-}
-
-function createCssText(){
-	var cssTextDict = {}
-	cssTextDict["cssText_roundCorners"] = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;";
-	cssTextDict["cssText_sbReviewsWidget"] = "width: 260px; height: 500px; background: rgba(224, 220, 230, 0.48); -moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px; border: 1px solid #fff;";
-
-	cssTextDict["cssText_sbEmbedPreview"] = "border-bottom: 1px solid #f8f8f8; padding-bottom: 5px; width:inherit;height:60%;";
-
-	cssTextDict["cssText_sbBadge"] =  "padding-top: 5px; padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto; height: 30%;";
-
-	cssTextDict["cssText_sbReviewsOuter"] = "width: 90%; height: 60%; position: relative; margin: 0px auto; border: 1px solid #ddd; border-radius: 3px; overflow-y: scroll;";
-
-	cssTextDict["cssText_sbReviewsInner"] = "width: 90%; height: auto; margin: 0 auto; padding-bottom: 15px;";
-
-	cssTextDict["cssText_sbReviewsList"] = "text-align: left !important; list-style: none; list-style-position:inside; margin:0; padding:0; line-height: 1.0;";
-
-	cssTextDict["cssText_li"] = "margin: 5px;font-family: Verdana, Arial, sans-serif; font-weight: 3; font-size: 80%; line-height: inherit; border-bottom: 1px solid #fbfbfb;";
-
-	cssTextDict["cssText_p"] = "opacity: 1.0; padding-bottom: 2px; margin-bottom:2px; height: 10px;";
-
-	cssTextDict["cssText_reviewBody"] = "opacity: 1.0; margin-top: 2px; margin-bottom: 7px;";
-
-	cssTextDict["cssText_reviewStars"] = "margin-bottom: 2px; margin-top: 1px;";
-
-	cssTextDict["cssText_sbCustomizationSection"] = "height: 50%; padding-top: 5px; text-align: center; font-family: Georgia; font-weight: 3; font-size: 80%;";
-	return cssTextDict;
-}
-
 window.onload = function(){
 	var cssTextDict = createCssText();
 	createPreviewElements();
 	createCustomizationElements();
 	var sb_reviews_bg_color = document.getElementById("sb_reviews_widget").getAttribute("data");
 	refreshEmbedCode(sb_reviews_bg_color, cssTextDict);
-	updateElementStyle("sb_badgeImg", cssTextDict["cssText_sbBadge"]);
-	updateElementStyle("sb_reviews_widget", cssTextDict["cssText_sbReviewsWidget"]);
-	updateElementStyle("sb_embed_preview", cssTextDict["cssText_sbEmbedPreview"]);
-	updateElementStyle("sb_reviews_outer", cssTextDict["cssText_sbReviewsOuter"]);
-	updateElementStyle("sb_reviews_inner", cssTextDict["cssText_sbReviewsInner"]);
-	updateElementStyle("sb_reviews_list", cssTextDict["cssText_sbReviewsList"]);
-	updateElementStyle("sb_customization_section", cssTextDict["cssText_sbCustomizationSection"]);
-	
-	
+	updateCss(cssTextDict);
+	updateReviewsList(cssTextDict);
+}
+
+function updateReviewsList(cssTextDict){
+	// populate reviews list
+	var sb_reviews_list = document.getElementById("sb_reviews_list");
 	for (r in reviews){
 	  // get review data
 	  var curr_review = reviews[r];
@@ -116,10 +78,16 @@ window.onload = function(){
 	  }
 	  review_body.innerHTML = review_body.innerHTML.replace('...', backlinkHtml);
 	}
-	
-	// timed auto scroll, item to item
-	sb_reviews_inner.scrollTop = 5;
-	//scrollReviews(sb_review_list.childNodes.length);
+}
+
+function updateCss(cssTextDict){
+	updateElementStyle("sb_badgeImg", cssTextDict["cssText_sbBadge"]);
+	updateElementStyle("sb_reviews_widget", cssTextDict["cssText_sbReviewsWidget"]);
+	updateElementStyle("sb_embed_preview", cssTextDict["cssText_sbEmbedPreview"]);
+	updateElementStyle("sb_reviews_outer", cssTextDict["cssText_sbReviewsOuter"]);
+	updateElementStyle("sb_reviews_inner", cssTextDict["cssText_sbReviewsInner"]);
+	updateElementStyle("sb_reviews_list", cssTextDict["cssText_sbReviewsList"]);
+	updateElementStyle("sb_customization_section", cssTextDict["cssText_sbCustomizationSection"]);
 }
 
 function createPreviewElements(){
@@ -206,34 +174,36 @@ function scrollReviews(numReviews)
 	}, 1000);
 }
 
-
-function scrollToNextReview(){
-    var ul = document.getElementById("sb_review_list");
-	ul.appendChild(ul.firstChild.cloneNode(true));   
-	ul.lastChild.id = "item " + ul.childNodes.length;
-	var container = document.getElementById("sb_reviews_inner");
-	
-	var maxOffset = ul.clientHeight - ul.lastChild.scrollHeight;
-	function infScroll(idx, sofar, delay){
-		setTimeout(function() {
-			currItem = ul.childNodes[idx];
-			if (container.scrollTop >= (sofar + currItem.scrollHeight)){
-				idx = ++idx % ul.childNodes.length;
-				sofar += container.scrollTop;
-				delay = 1000;
-			}
-			else{
-				delay = 0;
-				container.scrollTop += 1;
-				if(container.scrollTop >= maxOffset){
-					sofar = 5;
-					container.scrollTop = 5;
-					delay = 1000;
-					idx = 0;
-				}
-			}
-			window.requestAnimationFrame(function(){infScroll(idx, sofar, delay)}); 
-		}, delay);
+function updateElementStyle(id, cssString){
+	var curr = document.getElementById(id);
+	if (curr){
+		curr.style.cssText += cssString;
 	}
-	window.requestAnimationFrame(function(){infScroll(0, 0, 0)}, 1000); 
+}
+
+function createCssText(){
+	var cssTextDict = {}
+	cssTextDict["cssText_roundCorners"] = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;";
+	cssTextDict["cssText_sbReviewsWidget"] = "width: 260px; height: 500px; background: rgba(224, 220, 230, 0.48); -moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px; border: 1px solid #fff;";
+
+	cssTextDict["cssText_sbEmbedPreview"] = "border-bottom: 1px solid #f8f8f8; padding-bottom: 5px; width:inherit;height:60%;";
+
+	cssTextDict["cssText_sbBadge"] =  "padding-top: 5px; padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto; height: 30%;";
+
+	cssTextDict["cssText_sbReviewsOuter"] = "width: 90%; height: 60%; position: relative; margin: 0px auto; border: 1px solid #ddd; border-radius: 3px; overflow-y: scroll;";
+
+	cssTextDict["cssText_sbReviewsInner"] = "width: 90%; height: auto; margin: 0 auto; padding-bottom: 15px;";
+
+	cssTextDict["cssText_sbReviewsList"] = "text-align: left !important; list-style: none; list-style-position:inside; margin:0; padding:0; line-height: 1.0;";
+
+	cssTextDict["cssText_li"] = "margin: 5px;font-family: Verdana, Arial, sans-serif; font-weight: 3; font-size: 80%; line-height: inherit; border-bottom: 1px solid #fbfbfb;";
+
+	cssTextDict["cssText_p"] = "opacity: 1.0; padding-bottom: 2px; margin-bottom:2px; height: 10px;";
+
+	cssTextDict["cssText_reviewBody"] = "opacity: 1.0; margin-top: 2px; margin-bottom: 7px;";
+
+	cssTextDict["cssText_reviewStars"] = "margin-bottom: 2px; margin-top: 1px;";
+
+	cssTextDict["cssText_sbCustomizationSection"] = "height: 50%; padding-top: 5px; text-align: center; font-family: Georgia; font-weight: 3; font-size: 80%;";
+	return cssTextDict;
 }
