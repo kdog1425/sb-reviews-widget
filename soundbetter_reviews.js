@@ -19,26 +19,57 @@ var reviews = [{
   }}
 ]
 
-var cssText_roundCorners = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;";
-
-var cssText_badge = "padding-top: 5px; padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto "
-
-var cssText_li = "margin: 5px;font-family: Verdana, Arial, sans-serif; line-height: 1.0; font-weight: 3; font-size: 80%; "//color: #433249;"
-
-var cssText_p = "opacity: 1.0; padding-bottom: 2px; margin-bottom:2px;";
-
-var cssText_reviewBody = "opacity: 1.0; margin-top: 2px; margin-bottom: 7px;";
-
-var cssText_reviewStars = "margin-bottom: 2px; margin-top: 1px;";
-
 var REVIEW_SCROLL_DURATION = 1500;
 
+function updateElementStyle(id, cssString){
+	var curr = document.getElementById(id);
+	if (curr){
+		curr.style.cssText += cssString;
+	}
+}
+
+function createCssText(){
+	var cssTextDict = {}
+	cssTextDict["cssText_roundCorners"] = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;";
+	cssTextDict["cssText_sbReviewsWidget"] = "width: 260px; height: 500px; background: rgba(224, 220, 230, 0.48); -moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px; border: 1px solid #fff;";
+
+	cssTextDict["cssText_sbEmbedPreview"] = "border-bottom: 1px solid #f8f8f8; padding-bottom: 5px; width:inherit;height:60%;";
+
+	cssTextDict["cssText_sbBadge"] =  "padding-top: 5px; padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto; height: 30%;";
+
+	cssTextDict["cssText_sbReviewsOuter"] = "width: 90%; height: 60%; position: relative; margin: 0px auto; border: 1px solid #ddd; border-radius: 3px; overflow-y: scroll;";
+
+	cssTextDict["cssText_sbReviewsInner"] = "width: 90%; height: auto; margin: 0 auto; padding-bottom: 15px;";
+
+	cssTextDict["cssText_sbReviewsList"] = "text-align: left !important; list-style: none; list-style-position:inside; margin:0; padding:0; line-height: 1.0;";
+
+	cssTextDict["cssText_li"] = "margin: 5px;font-family: Verdana, Arial, sans-serif; font-weight: 3; font-size: 80%; line-height: inherit; border-bottom: 1px solid #fbfbfb;";
+
+	cssTextDict["cssText_p"] = "opacity: 1.0; padding-bottom: 2px; margin-bottom:2px; height: 10px;";
+
+	cssTextDict["cssText_reviewBody"] = "opacity: 1.0; margin-top: 2px; margin-bottom: 7px;";
+
+	cssTextDict["cssText_reviewStars"] = "margin-bottom: 2px; margin-top: 1px;";
+
+	cssTextDict["cssText_sbCustomizationSection"] = "height: 50%; padding-top: 5px; text-align: center; font-family: Georgia; font-weight: 3; font-size: 80%;";
+	return cssTextDict;
+}
+
 window.onload = function(){
-	var badge = document.getElementById("badge");
-	badge.style.cssText += cssText_badge;
-	refreshEmbedCode();
-	var div = document.getElementById("sb_reviews_inner");
-	var ul = document.getElementById("review_widget");
+	var cssTextDict = createCssText();
+	createPreviewElements();
+	createCustomizationElements();
+	var sb_reviews_bg_color = document.getElementById("sb_reviews_widget").getAttribute("data");
+	refreshEmbedCode(sb_reviews_bg_color, cssTextDict);
+	updateElementStyle("sb_badgeImg", cssTextDict["cssText_sbBadge"]);
+	updateElementStyle("sb_reviews_widget", cssTextDict["cssText_sbReviewsWidget"]);
+	updateElementStyle("sb_embed_preview", cssTextDict["cssText_sbEmbedPreview"]);
+	updateElementStyle("sb_reviews_outer", cssTextDict["cssText_sbReviewsOuter"]);
+	updateElementStyle("sb_reviews_inner", cssTextDict["cssText_sbReviewsInner"]);
+	updateElementStyle("sb_reviews_list", cssTextDict["cssText_sbReviewsList"]);
+	updateElementStyle("sb_customization_section", cssTextDict["cssText_sbCustomizationSection"]);
+	
+	
 	for (r in reviews){
 	  // get review data
 	  var curr_review = reviews[r];
@@ -46,44 +77,130 @@ window.onload = function(){
 	  // create list item
 	  var curr_li = document.createElement("li");
 	  curr_li.setAttribute("id", "item " + r);
-	  curr_li.style.cssText += cssText_li;
-	  curr_li.style.cssText += cssText_roundCorners;
+	  curr_li.style.cssText += cssTextDict["cssText_li"];
+	  curr_li.style.cssText += cssTextDict["cssText_roundCorners"];
 	  
 	  // reviewer name
 	  var reviewer = document.createElement("p");
-	  reviewer.style.cssText += cssText_p;
+	  reviewer.style.cssText += cssTextDict["cssText_p"];
 	  reviewer.innerHTML = curr_review.reviewer.name;
 	  reviewer.style.fontStyle = "italic";
 	  
 	  // review body
 	  var review_body = document.createElement("p");
 	  review_body.innerHTML = curr_review.body;
-	  review_body.style.cssText += cssText_reviewBody;
+	  review_body.style.cssText += cssTextDict["cssText_reviewBody"];
 	  
 	  // rating
 	  var rating = document.createElement("p");
-	  rating.style.cssText += cssText_reviewStars;
+	  rating.style.cssText += cssTextDict["cssText_reviewStars"];
 	  for (var i = 0; i < curr_review.rating; i++){
 		  var img = img_create("img/star-on.png");
 	  	  rating.appendChild(img);
 	  }
+
+	  var backlinkHtml = "<a  style=\"text-decoration: none; color: #aaa\" href=\"http://soundbetter.com\"> ...Read More</a>";
 	  
 	  // append all
 	  curr_li.appendChild(reviewer);
 	  curr_li.appendChild(rating);
 	  curr_li.appendChild(review_body);
-	  ul.appendChild(curr_li);
+	  sb_reviews_list.appendChild(curr_li);	  
+
+	  // line clamping
+	  var containerHeight = 60;
+	  var totalHeight = reviewer.clientHeight + rating.clientHeight + review_body.clientHeight;
+	  while (totalHeight > containerHeight) {
+		review_body.innerText = review_body.innerText.replace(/\W*\s(\S)*$/, '...');
+		totalHeight = review_body.clientHeight + reviewer.clientHeight + rating.clientHeight;
+	  }
+	  review_body.innerHTML = review_body.innerHTML.replace('...', backlinkHtml);
 	}
 	
 	// timed auto scroll, item to item
-	div.scrollTop = 5;
-	//scrollReviews(ul.childNodes.length);
+	sb_reviews_inner.scrollTop = 5;
+	//scrollReviews(sb_review_list.childNodes.length);
 }
+
+function createPreviewElements(){
+	var mainDiv = document.getElementById("sb_reviews_widget");
+	if (mainDiv){
+		var sb_embed_preview = createElement("div", "sb_embed_preview") 
+		mainDiv.appendChild(sb_embed_preview);
+		var sb_badge_a = createElement("a", "sb_badge");
+		sb_badge_a.setAttribute("href", "http://soundbetter.com");
+		var sb_badge_img = createElement("img", "sb_badgeImg");
+		sb_badge_img.setAttribute("src", "img/SoundBetterBadge.png");
+		sb_badge_a.appendChild(sb_badge_img);
+		sb_embed_preview.appendChild(sb_badge_a);
+		var sb_reviews_list = createElement("ul","sb_reviews_list");
+		var sb_reviews_inner = createElement("div","sb_reviews_inner");
+		var sb_reviews_outer = createElement("div","sb_reviews_outer");
+		sb_reviews_outer.appendChild(sb_reviews_inner);
+		sb_reviews_inner.appendChild(sb_reviews_list);
+		sb_embed_preview.appendChild(sb_reviews_outer);
+	}
+	else{
+		console.log("'sb_reviews_widget' div not in html!");
+	}
+}
+
+function createCustomizationElements(){
+	var mainDiv = document.getElementById("sb_reviews_widget");
+	if (mainDiv){
+		var sb_customization_section = createElement("div", "sb_customization_section"); 
+		mainDiv.appendChild(sb_customization_section);
+		var backgroundColor = createElement("p", "sb_bgColor_control");
+		backgroundColor.innerHTML = "Change background: <input class=\"color\"onchange=\"changeColor(this)\">";
+		var js_widget_code = createElement("p", "");
+		js_widget_code.innerHTML = "Paste this code to load the widget scripts:";
+		var js_textarea = createElement("textarea", "sb_embed_code_js");
+		var html_widget_code = createElement("p", "");
+		html_widget_code.innerHTML = "Paste this div where you want the widget:";
+		var html_textarea = createElement("textarea", "sb_embed_code_html");
+		sb_customization_section.appendChild(backgroundColor);
+		sb_customization_section.appendChild(js_widget_code);
+		sb_customization_section.appendChild(js_textarea);
+		sb_customization_section.appendChild(html_widget_code);
+		sb_customization_section.appendChild(html_textarea);
+	}
+	else{
+		console.log("'sb_reviews_widget' div not in html!");
+	}
+}
+
+function img_create(src, alt, title) {
+    var img= document.createElement('img');
+    img.src = src;
+    if (alt!=null) img.alt= alt;
+    if (title!=null) img.title= title;
+    return img;
+}
+
+function changeColor(c){
+	var div_outer = document.getElementById('sb_reviews_outer');
+	div_outer.style.backgroundColor = c.value;
+	refreshEmbedCode(c.value);
+}
+ 
+function refreshEmbedCode(c, cssTextDict){
+	var js = document.getElementById("sb_embed_code_js");
+	var html = document.getElementById("sb_embed_code_html");
+	js.innerHTML = "<script src=\"soundbetter_reviews.js\"></script><script type=\"text/javascript\" src=\"jscolor/jscolor.js\"></script>";
+	html.innerHTML = "<div data=" + c + " id=\"sb_reviews_widget\"></div>";
+}
+
+function createElement(type, id){
+	var newElement = document.createElement(type);
+	newElement.setAttribute("id",id);
+	return newElement;
+}
+
 
 function scrollReviews(numReviews)
 {
-	var ul = document.getElementById("review_widget");
-	ul.firstChild.style.height = 135; // for infinite scroll
+	var sb_review_list = document.getElementById("sb_review_list");
+	sb_review_list.firstChild.style.height = 135; // for infinite scroll
 	setTimeout(function(){
 			scrollToNextReview()
 	}, 1000);
@@ -91,7 +208,7 @@ function scrollReviews(numReviews)
 
 
 function scrollToNextReview(){
-    var ul = document.getElementById("review_widget");
+    var ul = document.getElementById("sb_review_list");
 	ul.appendChild(ul.firstChild.cloneNode(true));   
 	ul.lastChild.id = "item " + ul.childNodes.length;
 	var container = document.getElementById("sb_reviews_inner");
@@ -119,38 +236,4 @@ function scrollToNextReview(){
 		}, delay);
 	}
 	window.requestAnimationFrame(function(){infScroll(0, 0, 0)}, 1000); 
-}
-
-
-function img_create(src, alt, title) {
-    var img= document.createElement('img');
-    img.src = src;
-    if (alt!=null) img.alt= alt;
-    if (title!=null) img.title= title;
-    return img;
-}
-
-function changeColor(c){
-	// var ul = document.getElementById('review_widget');
-	// var lis = ul.getElementsByTagName("li");
-	// for (var i = 0, len = lis.length; i < len; i++){
-	// 	console.log(i);
-	// 	lis[i].style.backgroundColor = c.value;
-	// }
-	// var pis = ul.getElementsByTagName("p");
-	// for (var i = 0, len = pis.length; i < len; i++){
-	// 	console.log(i);
-	// 	pis[i].style.backgroundColor = c.value;	
-	// }
-	var div_inner = document.getElementById('sb_reviews_inner');
-	var div_outer = document.getElementById('sb_reviews_outer');
-	div_inner.style.backgroundColor = c.value;
-	div_outer.style.backgroundColor = c.value;
-}
- 
-function refreshEmbedCode(){
-	var js = document.getElementById("embed_code_js");
-	var html = document.getElementById("embed_code_html");
-
-	js.innerHTML = "<script src=\"soundbetter_reviews.js\"></script><script type=\"text/javascript\" src=\"jscolor/jscolor.js\"></script>";
 }
