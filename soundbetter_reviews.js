@@ -19,7 +19,7 @@ var reviews = [{
   }}
 ]
 
-SB_CONTROLS = [];
+var SB_CONTROLS = [];
 
 window.onload = function(){
 	var sb_reviews_widget = document.getElementById("sb_reviews_widget");
