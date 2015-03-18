@@ -160,9 +160,10 @@ function img_create(src, alt, title) {
     return img;
 }
 
-function changeColor(){
+function changeColor(c){
 	var div_outer = document.getElementById('sb_reviews_outer');
-	div_outer.style.backgroundColor = SB_CONTROLS["color"];
+	div_outer.style.backgroundColor = c.value;
+	SB_CONTROLS["color"] = '#' + c.value;
 	refreshEmbedCode();
 }
  
