@@ -19,16 +19,20 @@ var reviews = [{
   }}
 ]
 
+SB_CONTROLS = [];
+
 window.onload = function(){
 	var sb_reviews_widget = document.getElementById("sb_reviews_widget");
 	if (sb_reviews_widget){
 		var cssTextDict = createCssText();
 		createPreviewElements(sb_reviews_widget);
 		createCustomizationElements(sb_reviews_widget);
-		var sb_reviews_bg_color = sb_reviews_widget.getAttribute("data");
-		refreshEmbedCode(sb_reviews_bg_color, cssTextDict);
+		SB_CONTROLS["color"] = sb_reviews_widget.dataset.color;
+		SB_CONTROLS["autoscroll"] = sb_reviews_widget.dataset.autoscroll;
+		refreshEmbedCode(SB_CONTROLS);
 		updateCss(cssTextDict);
 		updateReviewsList(cssTextDict);
+		scrollReviews(4);
 	}
 	else{
 		console.log("'sb_reviews_widget' div not in html!");
@@ -94,6 +98,7 @@ function updateCss(cssTextDict){
 	updateElementStyle("sb_reviews_inner", cssTextDict["cssText_sbReviewsInner"]);
 	updateElementStyle("sb_reviews_list", cssTextDict["cssText_sbReviewsList"]);
 	updateElementStyle("sb_customization_section", cssTextDict["cssText_sbCustomizationSection"]);
+	updateElementStyle("autoscroll_checkbox", cssTextDict["cssText_checkbox"]);
 }
 
 function createPreviewElements(mainDiv){
@@ -124,11 +129,27 @@ function createCustomizationElements(mainDiv){
 	var html_widget_code = createElement("p", "");
 	html_widget_code.innerHTML = "Paste this code where you want the widget:";
 	var html_textarea = createElement("textarea", "sb_embed_code_html");
+
+	//<input type="checkbox" id="xxx" name="xxx" onclick="calc();"/>
+	var scroll_p = createElement("p", "");
+	scroll_p.style.cssText += ""
+	var scroll_span = createElement("span","scroll_span_text");
+	scroll_span.innerHTML = "Infinite autoscroll On/Off";
+	scroll_p.appendChild(scroll_span);
+	var scrollCheckBox = createElement("input","autoscroll_checkbox");
+	scroll_p.appendChild(scrollCheckBox);
+	scrollCheckBox.type = "checkbox";
+	scrollCheckBox.setAttribute("onclick", "scrollFunc()");
+
+
+
+	sb_customization_section.appendChild(scroll_p);
 	sb_customization_section.appendChild(backgroundColor);
 	sb_customization_section.appendChild(js_widget_code);
 	sb_customization_section.appendChild(js_textarea);
 	sb_customization_section.appendChild(html_widget_code);
 	sb_customization_section.appendChild(html_textarea);
+	
 }
 
 function img_create(src, alt, title) {
@@ -139,33 +160,23 @@ function img_create(src, alt, title) {
     return img;
 }
 
-function changeColor(c){
+function changeColor(){
 	var div_outer = document.getElementById('sb_reviews_outer');
-	div_outer.style.backgroundColor = c.value;
-	refreshEmbedCode(c.value);
+	div_outer.style.backgroundColor = SB_CONTROLS["color"];
+	refreshEmbedCode();
 }
  
-function refreshEmbedCode(c, cssTextDict){
+function refreshEmbedCode(){
 	var js = document.getElementById("sb_embed_code_js");
 	var html = document.getElementById("sb_embed_code_html");
 	js.innerHTML = "<script src=\"soundbetter_reviews.js\"></script><script type=\"text/javascript\"></script>";
-	html.innerHTML = "<div data=" + c + " id=\"sb_reviews_widget\"></div>";
+	html.innerHTML = "<div data-autoscroll= " + SB_CONTROLS["autoscroll"] + " data-color=" + SB_CONTROLS["color"] + " id=\"sb_reviews_widget\"></div>";
 }
 
 function createElement(type, id){
 	var newElement = document.createElement(type);
 	newElement.setAttribute("id",id);
 	return newElement;
-}
-
-
-function scrollReviews(numReviews)
-{
-	var sb_review_list = document.getElementById("sb_review_list");
-	sb_review_list.firstChild.style.height = 135; // for infinite scroll
-	setTimeout(function(){
-			scrollToNextReview()
-	}, 1000);
 }
 
 function updateElementStyle(id, cssString){
@@ -178,15 +189,16 @@ function updateElementStyle(id, cssString){
 function createCssText(){
 	var cssTextDict = {}
 	cssTextDict["cssText_roundCorners"] = "-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;";
-	cssTextDict["cssText_sbReviewsWidget"] = "width: 260px; height: 500px; background: rgba(224, 220, 230, 0.48); -moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px; border: 1px solid #fff;";
 
-	cssTextDict["cssText_sbEmbedPreview"] = "border-bottom: 1px solid #f8f8f8; padding-bottom: 5px; width:inherit;height:60%;";
+	cssTextDict["cssText_sbReviewsWidget"] = "width: 260px; height: 480px; background: rgba(224, 220, 230, 0.48); -moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px; border: 1px solid #fff;";
+
+	cssTextDict["cssText_sbEmbedPreview"] = "border-bottom: 1px solid #f8f8f8; padding-bottom: 5px; width:inherit; height:50%;";
 
 	cssTextDict["cssText_sbBadge"] =  "padding-top: 5px; padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto; height: 30%;";
 
-	cssTextDict["cssText_sbReviewsOuter"] = "width: 90%; height: 60%; position: relative; margin: 0px auto; border: 1px solid #ddd; border-radius: 3px; overflow-y: scroll;";
+	cssTextDict["cssText_sbReviewsOuter"] = "width: 90%; height: 60%; position: relative; margin: 0px auto; border: 1px solid #ddd; border-radius: 3px; overflow-y: hidden;";
 
-	cssTextDict["cssText_sbReviewsInner"] = "width: 90%; height: auto; margin: 0 auto; padding-bottom: 15px;";
+	cssTextDict["cssText_sbReviewsInner"] = "width: 85%; height: auto; margin: 0 auto; padding-bottom: 15px;";
 
 	cssTextDict["cssText_sbReviewsList"] = "text-align: left !important; list-style: none; list-style-position:inside; margin:0; padding:0; line-height: 1.0;";
 
@@ -199,5 +211,110 @@ function createCssText(){
 	cssTextDict["cssText_reviewStars"] = "margin-bottom: 4px; margin-top: 1px;";
 
 	cssTextDict["cssText_sbCustomizationSection"] = "height: 50%; padding-top: 5px; text-align: center; font-family: Georgia; font-weight: 3; font-size: 80%;";
+
+	cssTextDict["cssText_checkbox"] = "width: 18px; height: 18px; background: #00dd00; position: relative; margin-left: 20px;";
 	return cssTextDict;
 }
+
+
+function scrollReviews(numReviews)
+{
+	var sb_review_list = document.getElementById("sb_reviews_list");
+	var frame = document.getElementById("sb_reviews_outer");
+	sb_review_list.firstChild.style.height = frame.clientHeight; // for infinite scroll
+	var container = document.getElementById("sb_reviews_outer");
+	setTimeout(function(){
+		var ul = document.getElementById("sb_reviews_list");
+		ul.appendChild(ul.firstChild.cloneNode(true));   
+		ul.lastChild.id = "item " + numReviews;
+		scrollToNextReview()
+	}, 1000);
+}
+
+function scrollToNextReview(){
+	var ul = document.getElementById("sb_reviews_list");
+	var container = document.getElementById("sb_reviews_outer");
+	var maxOffset = ul.clientHeight - ul.lastChild.scrollHeight;
+	function infScroll(idx, sofar, delay){
+		if (SB_CONTROLS["autoscroll"] !== ""){
+			setTimeout(function() {
+				currItem = ul.childNodes[idx];
+
+				// item reached top of container
+				if (container.scrollTop  >= (sofar + currItem.scrollHeight + 15)){
+					delay = 1000;
+					sofar = container.scrollTop;
+					idx = ++idx % 3;
+					
+					// rewind to start if needed
+					if(container.scrollTop  >= maxOffset){
+						sofar = 0;
+						container.scrollTop = 0;
+						idx = 0;
+					}
+				}
+				else{
+					// keep scrolling
+					delay = 0;
+					container.scrollTop += 1;
+				} 
+				window.requestAnimationFrame(function(){infScroll(idx, sofar, delay)});
+			}, delay);
+		}
+	}
+	window.requestAnimationFrame(function(){infScroll(0, 0, 0)}, 1000); 
+}
+
+function scrollFunc(){
+	if (SB_CONTROLS["autoscroll"] == true){
+		scrollOff();
+	}
+	else{
+		scrollOn();
+	}
+	refreshEmbedCode(SB_CONTROLS);
+}
+
+function scrollOn(){
+	SB_CONTROLS["autoscroll"] = true;
+	scrollToNextReview();
+}
+
+function scrollOff(){
+	SB_CONTROLS["autoscroll"] = "";
+	var container = document.getElementById("sb_reviews_outer");
+	container.scrollTop = 0;
+}
+
+(function () {
+  var lastTime = 0;
+  var vendors = ['ms', 'moz', 'webkit', 'o'];
+  for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+  if(!window.requestAnimationFrame)
+    window.requestAnimationFrame = function (callback, element) {
+      var currTime = new Date().getTime();
+      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      var id = window.setTimeout(function () {
+        callback(currTime + timeToCall);
+      },
+      timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+  };
+  if(!window.cancelAnimationFrame)
+    window.cancelAnimationFrame = function (id) {
+      clearTimeout(id);
+  };
+}());
+
+// window.requestAnimFrame = (function(){
+//   return  window.requestAnimationFrame       ||
+//           window.webkitRequestAnimationFrame ||
+//           window.mozRequestAnimationFrame    ||
+//           function( callback ){
+//             window.setTimeout(callback, 1000 / 60);
+//           };
+// })();
