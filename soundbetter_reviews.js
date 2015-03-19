@@ -234,7 +234,6 @@ function scrollReviews()
 	var numReviews = getDirectChildrenByTagName(sb_reviews_list, "LI");
 	var frame = document.getElementById("sb_reviews_outer");
 	sb_review_list.firstChild.style.height = frame.clientHeight + 'px';; // for infinite scroll
-	console.log(sb_review_list.firstChild.style, frame.clientHeight);
 	var container = document.getElementById("sb_reviews_outer");
 	setTimeout(function(){
 		var ul = document.getElementById("sb_reviews_list");
