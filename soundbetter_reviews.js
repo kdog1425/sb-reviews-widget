@@ -197,7 +197,7 @@ function createCssText(){
 
 	cssTextDict["cssText_sbBadge"] =  "padding-top: 5px; padding-bottom: 10px;display: block;margin-left: auto;margin-right: auto; height: 30%;";
 
-	cssTextDict["cssText_sbReviewsOuter"] = "width: 90%; height: 60%; position: relative; margin: 0px auto; border: 1px solid #ddd; border-radius: 3px; overflow-y: hidden;";
+	cssTextDict["cssText_sbReviewsOuter"] = "width: 90%; height: 60%; position: relative; margin: 0px auto; border: 1px solid #ddd; border-radius: 3px; overflow-y: scroll;";
 
 	cssTextDict["cssText_sbReviewsInner"] = "width: 85%; height: auto; margin: 0 auto; padding-bottom: 15px;";
 
@@ -289,9 +289,9 @@ function scrollFunc(){
 
 function scrollOn(){
 	SB_CONTROLS["autoscroll"] = true;
+	var container = document.getElementById("sb_reviews_outer");
 	container.style.overflowY = "hidden";
 	scrollToNextReview();
-
 }
 
 function scrollOff(){
