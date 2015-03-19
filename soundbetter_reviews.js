@@ -32,7 +32,7 @@ window.onload = function(){
 		refreshEmbedCode(SB_CONTROLS);
 		updateCss(cssTextDict);
 		updateReviewsList(cssTextDict);
-		scrollReviews(4);
+		scrollReviews();
 	}
 	else{
 		console.log("'sb_reviews_widget' div not in html!");
@@ -203,7 +203,7 @@ function createCssText(){
 
 	cssTextDict["cssText_sbReviewsList"] = "text-align: left !important; list-style: none; list-style-position:inside; margin:0; padding:0; line-height: 1.0;";
 
-	cssTextDict["cssText_li"] = "margin: 5px;font-family: Verdana, Arial, sans-serif; font-weight: 3; font-size: 80%; line-height: inherit; border-bottom: 1px solid #fbfbfb;";
+	cssTextDict["cssText_li"] = "margin: 5px; font-family: Verdana, Arial, sans-serif; font-weight: 3; font-size: 80%; line-height: inherit; border-bottom: 1px solid #fbfbfb;";
 
 	cssTextDict["cssText_p"] = "opacity: 1.0; padding-bottom: 2px; margin-bottom:2px; height: 10px;";
 
@@ -217,12 +217,24 @@ function createCssText(){
 	return cssTextDict;
 }
 
+function getDirectChildrenByTagName(elem, tagname) {
+    var allChildren = elem.children, wantedChildren=[], i, L;
+    tagname = tagname.toUpperCase();
+    for(i=0, L=allChildren.length; i<L; i++) {
+        if (allChildren[i].tagName.toUpperCase() == tagname) {
+            wantedChildren.push(allChildren[i]);
+        }
+    }
+    return wantedChildren;
+}
 
-function scrollReviews(numReviews)
+function scrollReviews()
 {
 	var sb_review_list = document.getElementById("sb_reviews_list");
+	var numReviews = getDirectChildrenByTagName(sb_reviews_list, "LI");
 	var frame = document.getElementById("sb_reviews_outer");
-	sb_review_list.firstChild.style.height = frame.clientHeight; // for infinite scroll
+	sb_review_list.firstChild.style.height = frame.clientHeight + 'px';; // for infinite scroll
+	console.log(sb_review_list.firstChild.style, frame.clientHeight);
 	var container = document.getElementById("sb_reviews_outer");
 	setTimeout(function(){
 		var ul = document.getElementById("sb_reviews_list");
@@ -278,13 +290,16 @@ function scrollFunc(){
 
 function scrollOn(){
 	SB_CONTROLS["autoscroll"] = true;
+	container.style.overflowY = "hidden";
 	scrollToNextReview();
+
 }
 
 function scrollOff(){
 	SB_CONTROLS["autoscroll"] = "";
 	var container = document.getElementById("sb_reviews_outer");
 	container.scrollTop = 0;
+	container.style.overflowY = "scroll";
 }
 
 (function () {
