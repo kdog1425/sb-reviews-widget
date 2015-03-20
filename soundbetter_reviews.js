@@ -1,50 +1,57 @@
-var reviews = [{
-  "name": "Marshall Mixing", 
-  "body": "Marshall did a great job turning a 'tin-like' sound into a warm earthy sound on a song I had recorded. Thanks!", 
-  "rating": "4", 
-  "reviewer": {
-    "name": "Mary Jane Marcus"
-  }},{
-  "name": "Marshall Mixing", 
-  "body": "Marshall is my favorite pro out there. Thanks!", 
-  "rating": "5", 
-  "reviewer": {
-    "name": "Joe Schmoe"
-  }},{
-  "name": "Marshall Mixing", 
-  "body": "Marshall is without question the best singer I've ever worked with, a true artist and a gentleman. Couldn't recommend him enough!!", 
-  "rating": "4", 
-  "reviewer": {
-    "name": "Brian J."
-  }}
-]
 
+var SB_REVIEWS = [];
 var SB_CONTROLS = [];
 
 window.onload = function(){
 	var sb_reviews_widget = document.getElementById("sb_reviews_widget");
 	if (sb_reviews_widget){
-		var cssTextDict = createCssText();
-		createPreviewElements(sb_reviews_widget);
-		createCustomizationElements(sb_reviews_widget);
-		SB_CONTROLS["color"] = sb_reviews_widget.dataset.color;
-		SB_CONTROLS["autoscroll"] = sb_reviews_widget.dataset.autoscroll;
-		refreshEmbedCode(SB_CONTROLS);
-		updateCss(cssTextDict);
-		updateReviewsList(cssTextDict);
-		scrollReviews();
+		SB_REVIEWS = getReviews();
 	}
 	else{
 		console.log("'sb_reviews_widget' div not in html!");
 	}
 }
 
+function getReviews(){
+	var xmlhttp;
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.open("GET","http://localhost:3000/review_widget/fetch_reviews.json",true);
+	xmlhttp.send();
+	xmlhttp.onreadystatechange=function()
+	  {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	    {
+	    	SB_REVIEWS = eval(xmlhttp.responseText);
+	    	createWidget();
+	    }
+	  }
+}
+
+function createWidget(){
+	var cssTextDict = createCssText();
+	createPreviewElements(sb_reviews_widget);
+	createCustomizationElements(sb_reviews_widget);
+	SB_CONTROLS["color"] = sb_reviews_widget.dataset.color;
+	SB_CONTROLS["autoscroll"] = sb_reviews_widget.dataset.autoscroll;
+	refreshEmbedCode(SB_CONTROLS);
+	updateCss(cssTextDict);
+	updateReviewsList(cssTextDict);
+	scrollReviews();
+}
+
 function updateReviewsList(cssTextDict){
 	// populate reviews list
 	var sb_reviews_list = document.getElementById("sb_reviews_list");
-	for (r in reviews){
+	for (r in SB_REVIEWS){
 	  // get review data
-	  var curr_review = reviews[r];
+	  var curr_review = SB_REVIEWS[r];
 	  
 	  // create list item
 	  var curr_li = document.createElement("li");
@@ -140,8 +147,6 @@ function createCustomizationElements(mainDiv){
 	scroll_p.appendChild(scrollCheckBox);
 	scrollCheckBox.type = "checkbox";
 	scrollCheckBox.setAttribute("onclick", "scrollFunc()");
-
-
 
 	sb_customization_section.appendChild(scroll_p);
 	sb_customization_section.appendChild(backgroundColor);
